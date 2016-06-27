@@ -1,0 +1,105 @@
+{% load crispy_forms_tags %}
+
+<style>
+{% block style %}
+  nav{
+    margin-bottom: 0px;
+  }
+  .navbar{
+    color:white;
+    background-color: #0047b3;
+    background-image: url("http://www.transparenttextures.com/patterns/cubes.png");
+  }
+
+  .dropdown-menu li > a:hover {
+    background-color: #005ce6;
+    background-image: url("http://www.transparenttextures.com/patterns/cubes.png");
+  }
+  .navbar-default {
+    border: 0;
+  }
+  .navbar-default .navbar-brand {
+    color: white;
+  }
+  .navbar-default .navbar-nav>li>a {
+    color: white;
+  }
+  .navbar-default .navbar-brand:hover {
+    color: gold;
+  }
+  .navbar-default .navbar-nav>li>a:hover {
+    color: gold;
+  }
+  .dropdown-menu{
+    background-color: #0047b3;
+    background-image: url("http://www.transparenttextures.com/patterns/cubes.png");
+  }
+  .dropdown-menu:hover{
+    background-color: #0047b3;
+    background-image: url("http://www.transparenttextures.com/patterns/cubes.png");
+  }
+  .menu-option{
+    color: white;
+  }
+  .text-align-center{
+    text-align: center;
+  }
+  .navbar-static-top {
+    margin-bottom: 19px;
+  }
+  .navbar-toggle{
+    border-color: gold !important;
+    
+    background-color: black;
+    background-image: url("http://www.transparenttextures.com/patterns/cubes.png");
+  }
+  select option:checked{
+    color: red !important;
+    background-color: #0047b3 !important;
+    background-image: url("http://www.transparenttextures.com/patterns/cubes.png");
+  }
+{% endblock %}
+</style>
+<!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a href="/"class="navbar-brand">CharityFitness</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            {% if user.is_authenticated %}
+            <li ><a href="/">Profile</a></li>
+            <li class="dropdown">
+              <a class="head_thing"  data-toggle="dropdown">Health Info <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'exercise' %}"><p class="menu-option">Excercise</p></a></li>
+                <li><a href="{% url 'diet' %}"><p class="menu-option">Diet</p></a></li>
+                <li><a href="{% url 'injury' %}"><p class="menu-option">Injury Prevention/Recovery</p></a></li>
+              </ul>
+            </li>
+            {% endif %}
+            <li><a href="{% url 'contact' %}">Contact</a></li>
+            <li><a href="{% url 'about' %}">About Us</a></li>
+            
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+              <form class="navbar-form form-inline" action="{% url 'login' %}" method="POST">{% csrf_token %}
+                {{login_form|crispy}}
+                <input class="btn btn-success" type="submit" value="Login">
+              </form>
+            {% endif %}
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>

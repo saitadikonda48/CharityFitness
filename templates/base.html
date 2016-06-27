@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>CharityFitness</title>
+
+    <!-- Bootstrap core CSS -->
+    <!-- <link href="../../dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="navbar-static-top.css" rel="stylesheet"> -->
+    <style>
+    body {
+      min-height: 700px;
+      background-color: #005ce6;
+      background-image: url("http://www.transparenttextures.com/patterns/cubes.png");
+    }
+    .main-info-box{
+
+      max-height: 600px;
+      overflow: scroll; 
+      background-color: #262626;
+      color:white;
+      border-color: gold;
+      border-width: .75em;
+      border-style: groove;
+    }
+    {% block style %}
+    {% endblock %}
+    </style>
+
+  </head>
+
+  <body>
+    {% include 'navbar.html' %}
+
+    <div class="container">
+      <!-- Messages -->
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if 'error' in message.tags %}alert-warning{%else %}alert-success{% endif %}" role="alert">{% if 'safe' in message.tags %}{{ message|safe }}{% else %} {{ message }}{% endif %}
+        </div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- Content -->
+      {% block content %}
+
+      {% endblock %}
+      
+      <!-- Main component for a primary marketing message or call to action -->
+      <!-- <div class="jumbotron">
+        <h1>Navbar example</h1>
+        <p>This example is a quick exercise to illustrate how the default, static and fixed to top navbar work. It includes the responsive CSS and HTML, so it also adapts to your viewport and device.</p>
+        <p>To see the difference between static and fixed top navbars, just scroll.</p>
+        <p>
+          <a class="btn btn-lg btn-primary" href="../../components/#navbar" role="button">View navbar docs &raquo;</a>
+        </p>
+      </div> -->
+
+    </div> <!-- /container -->
+
+    {% include 'javascript.html' %}
+    <script>
+      $(document).ready(function(){
+        {% block jquery %}
+        {% endblock %}
+      });
+    </script>
+
+  </body>
+</html>

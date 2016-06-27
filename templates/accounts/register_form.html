@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+<style>
+{% block style %}
+.btn-success{
+	border-width: 0;
+	background: darkgreen; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(darkgreen,green);
+    background: -o-linear-gradient(darkgreen,green);
+    background: -moz-linear-gradient(darkgreen,green);
+    background: linear-gradient(darkgreen,green);
+}
+.btn-success:hover{
+	background: green; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(green,lightgreen);
+    background: -o-linear-gradient(green,lightgreen);
+    background: -moz-linear-gradient(green,lightgreen);
+    background: linear-gradient(green,lightgreen);
+}
+{% endblock %}
+</style>
+{% block content %}
+<div class = 'col-sm-8 col-sm-offset-2 main-info-box'>
+    <h1 class="text-align-center">Register</h1><hr>
+	<div class="col-sm-8 col-sm-offset-2" style="padding-bottom:5%;">
+    <form method="POST" action="">{% csrf_token %}
+	{{register_form|crispy}}
+	<input type="submit" class="btn btn-success btn-block" value="Submit">
+	</form>
+	</div>
+</div>
+{% endblock %}

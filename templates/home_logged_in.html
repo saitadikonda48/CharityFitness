@@ -1,0 +1,377 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+<style>
+{% block style %}
+#info_box{
+	overflow: scroll;
+	/*background-color:gray;*/
+	background-color:#262626;
+	height:550px;
+	border-color: blue;
+	border-width: .5em;
+	border-style: groove;
+	/*color:black;*/
+	color:white;
+}
+#graph_box{
+	overflow: scroll;
+	background-color:#262626;
+	height:550px;
+	border-color: red;
+	border-width: .5em;
+	border-style: groove;
+	color:black;
+}
+.heading{
+	font-size: 250%;
+}
+.textInfo{
+	border-radius: 10px;
+	background-color:#262626;
+    -webkit-transition: background 0.5s linear;
+    -moz-transition: background 0.5s linear;
+    -ms-transition: background 0.5s linear;
+    -o-transition: background 0.5s linear;
+    transition: background 0.5s linear;
+	color:white;
+}
+.textInfo:hover{
+	background-color: lightgray;
+	color:blue;
+
+}
+li {
+    list-style-type: none;
+}
+#currentWeightDiv label{
+	color: white;
+}
+#editButton{
+	/*border-color: transparent;*/
+	border-radius: 10px;
+	background: #980000; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#980000,#FF7F50);
+    background: -o-linear-gradient(#980000,#FF7F50);
+    background: -moz-linear-gradient(#980000,#FF7F50);
+    background: linear-gradient(#980000,#FF7F50);
+}
+#editButton:hover{
+	/*border-color: transparent;*/
+	background: red; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(red,#FF7F50);
+    background: -o-linear-gradient(red,#FF7F50);
+    background: -moz-linear-gradient(red,#FF7F50);
+    background: linear-gradient(red,#FF7F50);
+}
+#profForm{
+	background-color: transparent;
+}
+#donateButton{
+	background: #980000; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#980000,#FF7F50);
+    background: -o-linear-gradient(#980000,#FF7F50);
+    background: -moz-linear-gradient(#980000,#FF7F50);
+    background: linear-gradient(#980000,#FF7F50);
+    border-radius: 10px;
+	color:white;
+	font-size: 135%;
+}
+#donateButton:hover{
+	background: red; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(red,#FF7F50);
+    background: -o-linear-gradient(red,#FF7F50);
+    background: -moz-linear-gradient(red,#FF7F50);
+    background: linear-gradient(red,#FF7F50);
+    border-radius: 10px;
+	color:white;
+	font-size: 135%;
+}
+#space{
+	font-size: 1.1em;
+	text-align: center;
+	color:white;
+	padding-top: 1%;
+	padding-bottom: 1%;
+}
+#donateText{
+	top:5px;
+	vertical-align: middle;
+}
+/*Save the children div*/
+.videoWrapper {
+	position: relative;
+	padding-bottom: 56.25%;
+	padding-top: 25px;
+	height: 0;
+}
+.videoWrapper iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+{% endblock %}
+</style>
+<script>
+{% block jquery %}
+
+// JQuery for Chart
+var stringWeightList = "{{weightChangeList}}";
+stringWeightList = stringWeightList.replace("[","");
+stringWeightList = stringWeightList.replace("]","");
+var expectedWeightList = stringWeightList.split(",");
+var numList = [];
+function addDataToList(){
+	for(x=0; x<expectedWeightList.length; x++){
+		var num = parseFloat(expectedWeightList[x]);
+		numList.push(num);
+	}
+};
+addDataToList();
+var currList = [];
+var currWeight = Number.parseFloat("{{todaysWeight}}");
+currList.push(currWeight);
+
+// Determine if Donate Bar should be shown
+var timeSinceStart = (Date.now()-Date.parse("{{request.user.userprofile.startDate}}"))
+indexOfExpected = Math.ceil((timeSinceStart)/(86400000));
+var goalReached = true;
+
+// Determine if Donation page should be shown
+var pageRequested = false;
+var startWeight = parseFloat("{{startWeight}}");
+var goalWeight = parseFloat("{{goalWeight}}");
+
+function detGoalReached(){
+	if(currWeight > 0){
+		if(startWeight > goalWeight) {
+			goalReached = (numList[indexOfExpected] >= currWeight);
+		} else {
+			goalReached = (numList[indexOfExpected] <= currWeight);
+		}
+	}
+}
+detGoalReached();
+$('#hc_container').highcharts({
+		chart: {
+            backgroundColor: {
+                linearGradient: [0, 0, 500, 500],
+                stops: [
+                    [0, 'white'],
+                    [.9, '#700000']
+                ]
+            },
+        },
+        
+		tooltip: {
+				formatter: function () {
+					var monthNames = [
+						  "January", "February", "March",
+						  "April", "May", "June", "July",
+						  "August", "September", "October",
+						  "November", "December"
+						];
+					if(this.series.name == 'Ideal Weight'){
+						var xval = new Date(Math.round(this.x * 100) / 100);
+						var yval = Math.round(this.y * 100) / 100;
+	                	return 'On <b>' + monthNames[xval.getMonth()] + " " + xval.getDate() + ", " + xval.getFullYear() + 
+	                    '</b> your expected weight is <b>' + yval + '</b> lbs.';
+	                } else {
+
+	                	var d = new Date(Date.now());
+	                	return 'Today, on <b>' + monthNames[d.getMonth()] + " " + d.getDate() + ", "  + d.getFullYear() + ' </b>, you weigh <b>' + currWeight + '</b> lbs.';
+	                }
+            	},
+	            backgroundColor: {
+	                linearGradient: [0, 0, 0, 60],
+	                stops: [
+	                    [0, 'red'],
+	                    [1, 'white']
+	                ]
+	            },
+	            borderWidth: 1,
+	            borderColor: '#AAA',
+	            style: {
+	            	color: 'white',
+	            },
+	            valueDecimals: 2
+        },
+        title: {
+        	style: {
+	            	color: '#ffd700',
+	            },
+            text: 'Weight Change'
+        },
+        xAxis: {
+            title: {
+            	style:{color:'white'},
+                text: 'Time'
+            },
+            type: 'datetime',
+            labels: {
+            style:{color:'white'},
+            format: '{value:%m/%d/%y}',
+            rotation: 60,
+            align: 'left'
+        	}
+        },
+        yAxis: {
+            title: {
+            	style:{color:'black'},
+                text: 'Weight (lbs)'
+            },
+            labels: {
+            style:{color:'black'},
+        	}
+        },
+		legend: {
+            itemStyle: {
+                color: 'white',
+                fontWeight: 'weak',
+                
+            }
+        },
+        series: [
+        {
+            name: 'Ideal Weight',
+            data: numList,
+	        pointStart: Date.parse("{{request.user.userprofile.startDate}}"),
+	        // Divide by length of dataArray
+	        pointInterval: (Date.parse("{{request.user.userprofile.goalDate}}")-Date.parse("{{request.user.userprofile.startDate}}"))/numList.length,
+            color: 'green',
+            shadow:true,
+            marker: {enabled: false},
+        },
+        {
+            name: 'Current Weight',
+            data: currList,
+	        pointStart: Date.now(),
+	        // Divide by length of dataArray
+	        pointInterval: (Date.parse("{{request.user.userprofile.goalDate}}")-Date.parse("{{request.user.userprofile.startDate}}"))/numList.length,
+            color: 'yellow',
+            shadow:true,
+            marker: {enabled: true},
+        },]
+});
+function showDonateButton(){
+	if(goalReached){
+		$("#donateButton").hide();
+		$("#space").html("");
+	} else{
+		$("#donateButton").show();
+		$("#space").html("Sorry, you missed your goal.");
+	}
+}
+showDonateButton();
+// Edit Profile Information
+$("#editBox").hide();
+$(".videoWrapper").hide();
+var profileInfoHidden = false;
+$("#editButton").click(function() {
+	if(profileInfoHidden){
+		$("#profileInfo").fadeIn();
+		$("#editBox").fadeOut();
+		$("#editButton").html('Edit Info');
+		profileInfoHidden = false;
+	} else {
+		$("#profileInfo").fadeOut();
+		$("#editBox").fadeIn();
+		$("#editButton").html('Done');
+		profileInfoHidden = true;
+	}
+});
+$("#donateButton").click(function() {
+	if(pageRequested) {
+		// alert("Show website");
+		$(".videoWrapper").hide();
+		$("#all_graph_stuff").show();
+		$("#donateButton").html("Donate Now");
+		pageRequested = (!pageRequested);
+	} else {
+		// alert("Hide website");
+		$(".videoWrapper").show();
+		$("#all_graph_stuff").hide();
+		$("#donateButton").html("Go Back");
+		pageRequested = (!pageRequested);
+	}
+});
+{% endblock %}
+</script>
+{% block content %}
+<div class="row">
+	<div class="col-md-4" id="info_box"></br>
+		<!-- Edit Button -->
+		<button type="button" class="btn btn-primary pull-right" id="editButton">Edit Info</button><br><br>
+
+		<!-- <div class="col-sm-3 pull-right lead" id="editButton" style="background-color:orange; height:30px;"><p style ="text-align-center">Edit</p></div><br><br> -->
+		<!-- Header -->
+		<p class="text-align-center lead heading" >Profile Info</p>
+
+		<!-- Profile Info -->
+		<div id="profileInfo">
+		<!-- Name -->
+		<li class="lead textInfo" >Name: {{request.user.userprofile.full_name}}</li>
+		<!-- Age -->
+		<li class="lead textInfo" >Age: {{request.user.userprofile.age}}</li>
+		<!-- Height -->
+		<li class="lead textInfo" >Height: {{request.user.userprofile.height}} cm </li>
+		<!-- Starting Weight -->
+		<li class="lead textInfo" >Starting Weight: {{request.user.userprofile.startWeight}} lbs</li>
+		<!-- Start Date -->
+		<li class="lead textInfo" >Start Date: {{request.user.userprofile.startDate}}</li>
+		<!-- Goal Weight -->
+		<li class="lead textInfo" >Goal Weight: {{request.user.userprofile.goalWeight}} lbs</li>
+		<!-- Goal Date -->
+		<li class="lead textInfo" >Goal Date: {{request.user.userprofile.goalDate}}</li>
+		<!-- Activities-->
+		<li class="lead textInfo" >Activites: {{request.user.userprofile.hobbies}}</li>
+		</div>
+		
+		<!-- Edit Forms -->
+		<div id="editBox">
+			<form method="POST" action="" id="profForm">{% csrf_token %}
+				{{editForm | crispy}}
+				<input class='btn btn-block btn-success' type='submit' value='Submit New Info'/><br>
+			</form>
+		</div>
+	</div>
+	<!-- Graph Box -->
+	<div class="col-md-8" id="graph_box"><br>
+		<div id="all_graph_stuff">
+			<!-- Graph -->
+			<div class="col-sm-12">
+				<div id="hc_container" style="width:100%; height:100%;"></div>
+			</div>
+			<!-- Form to check weight -->
+			<div id = "currentWeightDiv" class="col-sm-8 col-sm-offset-2" style="padding-top:2%;">
+				<form class="form-inline "method="GET" action="">{% csrf_token %}
+					<p class="lead" style="display:inline;color:white;">Current Weight: </p>{{weightForm|crispy}}
+					<input class="btn btn-info" type='submit' value='submit'/>
+				</form>
+			</div>
+		</div>
+
+		<!-- SaveTheChildren Foundation -->
+		<div class="col-sm-12">
+			<div class="videoWrapper">
+			    <iframe src="https://secure.savethechildren.org/site/c.8rKLIXMGIpI4E/b.6239401/k.C01C/Global_Action_Fund/apps/ka/sd/donor.asp" allowfullscreen></iframe>
+			</div>
+		</div>
+
+		<div id="space" class="col-sm-6 col-sm-offset-3">
+		</div>
+
+		
+		<!-- Reveal Donate Button -->
+		<div class="col-sm-10 col-sm-offset-1">
+			<button type="button" class="btn btn-block" id="donateButton">Donate now</button><br><br>
+		</div>
+		<!-- Donate Button -->
+		
+	</div>
+	
+</div>
+
+{% endblock %}

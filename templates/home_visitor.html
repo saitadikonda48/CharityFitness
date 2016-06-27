@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+<style>
+{% block style %}
+.jumbotron{
+	border-color: gold;
+	border-width: .75em;
+	border-style: groove;
+	background-color:#262626;
+	color:white;
+}
+.btn-danger{
+	border-width: 0;
+	background-color:#980000;
+}
+.btn-danger:hover{
+	background: red; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#980000,red);
+    background: -o-linear-gradient(#980000,red);
+    background: -moz-linear-gradient(#980000,red);
+    background: linear-gradient(#980000,red);
+}
+{% endblock %}
+</style>
+
+{% block content %}
+
+<!-- Main component for a primary marketing message or call to action -->
+<div class="jumbotron">
+	<div class = "row">
+		<div class = "col-sm-6">
+			<h1>CharityFitness</h1><hr>
+			<p>Keep track of your personal goals. </p>
+			<p>Donate to the Save the Children charity if you miss your goals.</p>
+			<p>Learn how to improve your personal health with our information and tools.</p>
+		</div>
+		<div class = "col-sm-1"></div>
+		<div class = "col-sm-5">
+			<h2 style="text-align:center;">Sign up for free</h2>
+			<form method='POST' action='{% url "register" %}'>{% csrf_token %}
+			  {{register_form|crispy}}
+			  <input class='btn btn-block btn-danger' type='submit' value='Create Account!'/>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+
+
+{% endblock %}

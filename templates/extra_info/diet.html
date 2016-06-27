@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+<script>
+{% block jquery %}
+// User weight Info
+userWeight = parseInt("{{caloric_intake}}");
+
+// Build the chart
+$('#hc_container').highcharts({
+    chart: {
+    	backgroundColor: {
+            linearGradient: [0, 0, 500, 500],
+            stops: [
+                [0, 'darkblue'],
+                [.9, 'blue']
+            ]
+        },
+        plotBackgroundColor: "black",
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },legend: {
+        itemStyle: {
+            color: 'white',
+        }
+    },
+    title: {
+        text: 'Caloric Intake',
+        style:{color:'white'},
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: false
+            },
+            showInLegend: true
+        }
+    },
+    series: [{
+        name: 'Calories',
+        colorByPoint: true,
+        data: [{
+            name: 'Grains',
+            y: (userWeight)*.3
+        }, {
+            name: 'Veggies',
+            y: (userWeight)*.2,
+        }, {
+            name: 'Meat',
+            y: (userWeight)*.15
+        }, {
+            name: 'Nuts',
+            y: (userWeight)*.1
+        }, {
+            name: 'Fruit',
+            y: (userWeight)*.1
+        }, {
+            name: 'Dairy',
+            y: (userWeight)*.05
+        },{
+        	name: 'Oils',
+            y: (userWeight)*.05
+        },{
+        	name: 'Eggs',
+            y: (userWeight)*.05
+        }]
+    }]
+});
+{% endblock %}
+</script>
+
+{% block content %}
+	<div class = 'col-sm-10 col-sm-offset-1 main-info-box'>
+    <h1 class="text-align-center">Diet</h1><hr>
+    <p class="text-align-center"><em>"I don't stop eating when I'm full. The meal isn't over when I'm full. It's over when I hate myself."</em>&emsp;- Louis C. K.</p>
+    
+    <p>Whether you are attempting to gain weight or lose weight it is important that take into account the portions of food that you consume. If you are attempting to lose weight than you <em>must</em> have a calorie deficit. In other words you must burn more energy than you consume. So eating healthier foods will not neccesarily help you lose weight. You have to you have to lose more energy than you are taking in. The opposite logic applies to someone who is trying to gain weight. If you go to the gym and lift for 2 hours a day you must consume a <strong>lot</strong> of food or else you may lose weight. This mistake is actually very common for skinny people trying to gain muscle.</p>
+    <p>Many people grew up in a house where they were told to eat everything on their plate. Doing otherwise would lead to harsh reprimandation. It makes sense from a biological perspective. Certain activities for animals provide a release of chemicals, such as dopamine and serotonin, in the brain that provide pleasure. This is because it provides animals an incentive to engage in certain activities. For example, in order for lions to exist the must eat and reproduce. So lions who got pleasure from eating and reproducing engaged in those activites most often and passed the trait on to their children. The same logic applies to humans. Eating and reproducing provide us pleasure, but the problem in the US is that technological advances have led to an abundance of food. This evolutionary advantageous trait has turned on many of us. If it has negatively affected your personal health then portion control may be the answer to your problem.</p>
+    <p>Your diet should consist of a variety of food. If you eat only one type of food you may not get all of the required nutrients. It can also help prevent the adverse effect of pesticides on your health, assuming a certain food your eating has been contaminated. Your food should also contain a lot of produce. In fact, the safest option is to minimize your intake of food that has been processed. Also, whenever you eat bread try to make sure it is whole grain or whole wheat. For example, if you like sandwiches then switch to whole wheat or whole grain. Water is also extremely beneficial whether you are trying to gain or lose weight. If you are trying lose weight then water helps since it has no calories or processed sugars. If you are trying to gain weight then water helps you absorb protein more efficiently.</p>
+    <p>It can be quiet difficult to keep track of calories and I do not expect all of you to walk around with a book keeping track of how many calories you consume. That being said your best option is to estimate your caloric intake and atleast make somewhat of an attempt to meet the requirements for different food groups. Below is a pie chart representing the proportions of food you should be eating.</p>
+    <p><strong>Below</strong> lies a chart that shows the number of calories of food groups that you should consume daily given a certain number of calories (with the default being 2000 calories). The chart assumes you are not a vegetarian and are not alergic to nuts. If happen to be either than substitute that portion of your diet with some vegetable that has the same nutritional value.</p></br>
+    
+    <div class="col-sm-8 col-sm-offset-2" >
+	    <div class="col-sm-12">
+			<div id="hc_container" style="width:100%; height:100%;"></div>
+		</div>
+	</div>
+	<div class="col-md-8 col-md-offset-3"style="padding-top:2%;padding-bottom:2%;">
+	    <form class="form-inline"method="POST" action="">{% csrf_token %}
+	    	<p class="lead" style="display:inline;color:white;">Daily Caloric Intake:</p>{{calorieForm|crispy}}
+	    	<input class="btn btn-success " type='submit' value='Submit'/>
+	    </form>
+	</div>
+  </div>
+{% endblock %}
