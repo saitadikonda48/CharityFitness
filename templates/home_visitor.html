@@ -34,8 +34,8 @@
 			<p>Donate to the Save the Children charity if you miss your goals.</p>
 			<p>Learn how to improve your personal health with our information and tools.</p>
 		</div>
-		<div class = "col-sm-2"></div>
-		<div class = "col-sm-4">
+		<div class = "col-sm-1"></div>
+		<div class = "col-sm-5">
 			<h2 style="text-align:center;">Sign up for free</h2>
 			<form method='POST' action='{% url "register" %}'>{% csrf_token %}
 			  {{register_form|crispy}}
