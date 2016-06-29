@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'uo6b9=x_gha$5l1c22+lj$p)#hlrn)_(ls3*pvzl(262vp$&-_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['charityfitness.net','www.charityfitness.net']
 
 AUTH_USER_MODEL = 'accounts.MyUser'
 
